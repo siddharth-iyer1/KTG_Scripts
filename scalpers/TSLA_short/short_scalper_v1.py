@@ -27,13 +27,13 @@ class Gr8Script96cff36e80a74607a7bf36a295008af8(Strategy):
             print(moving_avg)
             if((md.L1.last <= (moving_avg - 2)) and account[self.symbol].position.shares == 0):        # Local min
                 order.algo_sell(self.symbol, algorithm='market', intent='init', order_quantity=100)
-                print("Open short position on TSLA")
+                print("Open short position")
         else:
             pass
         
     def on_trade(self, event, md, order, service, account):
-        if(account['TSLA'].position.shares != 0):
-            short_price = (account['TSLA'].position.capital_short/account['TSLA'].position.shares)
-            if(md.L1.last < (short_price - 2)):
+        if(account[self.symbol].position.shares != 0):
+            short_price = (account[self.symbol].position.capital_short/account[self.symbol].position.shares)
+            if(md.L1.last < (short_price - 2) or (md.L1.last > (short_price + 2))):
                 order.algo_buy(self.symbol, algorithm='market', intent='exit')
-                print("Covered 100 shares of TSLA")
+                print("Covered short position")
