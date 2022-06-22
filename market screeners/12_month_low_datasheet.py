@@ -24,7 +24,7 @@ Year_Low = []
 Volume = []
 print(len(Tickers))
 
-for i in tqdm (range(1196)):
+for i in tqdm (range(len(Tickers) - 3)):      # Doesn't take last three tickers but prevents errors when yFinance messes up data
   df = yf.download(Tickers[i], start="2021-06-21",
                     end="2022-06-21")
   # Find yearly low and previous day's close
@@ -36,11 +36,14 @@ for i in tqdm (range(1196)):
     Year_Low.append(low)
     Prev_Clos.append(close)
     Volume.append(vol)
+  else:
+    Tickers.remove(Tickers[i])
 
 PC = np.array(Prev_Clos)
 YL = np.array(Year_Low)
 
-df
+PC = np.array(Prev_Clos)
+YL = np.array(Year_Low)
 
 Dictionary = {};
 
@@ -61,4 +64,6 @@ final = final[dataset['Vol'] >= 1000000]
 
 pd.set_option("display.max_rows", None, "display.max_columns", None)
 final
+
+final.to_excel(r'/content/drive/MyDrive/12ml_watch.xlsx', index = False)
 
