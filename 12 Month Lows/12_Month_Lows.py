@@ -47,9 +47,9 @@ class Gr8Script7069f6af08d2470b966bea08b69990be(Strategy):
                                                                                                     # Prevents auto shorting if trader decides to
                                                                                                     # manually exit
                                                                                                     
-            if(account[self.symbol].position.shares != 0):                                          # Stop at 2% above entry
-                if(md.L1.last > 1.02*(account[self.symbol].position.entry_price)):
-                    order.algo_buy(self.symbol, algorithm='2b4fdc55-ff01-416e-a5ea-e1f1d4524c7d', intent='exit')
+        if(account[self.symbol].position.shares != 0):                                              # Stop at 2% above entry
+            if(md.L1.last > 1.02*(account[self.symbol].position.entry_price)):
+                order.algo_buy(self.symbol, algorithm='2b4fdc55-ff01-416e-a5ea-e1f1d4524c7d', intent='exit')
             
     # Exit at 3:30 EST
     
