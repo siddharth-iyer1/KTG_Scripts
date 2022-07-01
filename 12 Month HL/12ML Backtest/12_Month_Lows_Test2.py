@@ -1,7 +1,7 @@
 from cloudquant.interfaces import Strategy, Event
 import ktgfunc
 
-class Gr8Script7069f6af08d2470b966bea08b69990be(Strategy):
+class Gr8Scripte3cacb6819a347a9af9252bb8c0a8e6b(Strategy):
     __script_name__ = '12_month_lows'
     
     @classmethod 
@@ -30,7 +30,7 @@ class Gr8Script7069f6af08d2470b966bea08b69990be(Strategy):
         self.entry_data = {}
         self.exit_data = {}
         
-        service.add_time_trigger(service.time(15, 30))                         # Cover at 3:30 EST
+        service.add_time_trigger(service.time(12, 50))                         # Cover at 3:30 EST
             
     # Alert at 2%
     
@@ -78,5 +78,3 @@ class Gr8Script7069f6af08d2470b966bea08b69990be(Strategy):
             self.exit_data['Low of Day'] = self.abs_low
             self.exit_data['Time of Low of Day'] = self.abs_low_time
             order.algo_buy(self.symbol, algorithm='market', intent='exit', collect=self.exit_data)
-
-
