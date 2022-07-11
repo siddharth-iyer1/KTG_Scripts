@@ -66,28 +66,3 @@ class Gr8Scripta7015fc8d54749e29af05c6985daa308(Strategy):
     def on_timer(self, event, md, order, service, account):
         if(account[self.symbol].position.shares != 0):
             order.algo_sell(self.symbol, algorithm='8fdee8fe-b772-46bd-b411-5544f7a0d917', intent='exit')
-
-
-
-    # Scalp/stop - For testing, going to use exit at market close
-
-        # Scalp after 3% profit or stop out after 3% loss
-        # if(account[self.symbol].position.shares != 0):
-            # if(md.L1.last > 1.03*(account[self.symbol].position.entry_price) or                    # Stopped out
-              # md.L1.last < 0.97*(account[self.symbol].position.entry_price)):                      # Scalp
-                # order.algo_buy(self.symbol, algorithm='2b4fdc55-ff01-416e-a5ea-e1f1d4524c7d', intent='exit')
-           
-            
-            #----------------------- Sell Init-----------------------
-            # trade_data = {}
-            # orderShares = abs(<shares>)
-            # orderPrice = 0.0
-            # VoodooGuid = '{'8fdee8fe-b772-46bd-b411-5544f7a0d917'  #Sell Market ARCA}'
-            # order.algo_sell( md.symbol, voodooGuid, 'init', order_quantity=orderShares, price=orderPrice, allow_multiple_pending=False, user_key=None, collect=trade_data )
-
-            #----------------------- Buy Exit-----------------------
-            # trade_data = {}
-            # orderPrice = 0.0
-            # voodooGuid = '{'2b4fdc55-ff01-416e-a5ea-e1f1d4524c7d'  #Buy Market ARCA}'
-            # order.algo_buy( md.symbol, voodooGuid, 'exit', price=orderPrice, allow_multiple_pending=False, user_key=None, collect=trade_data )
-            

@@ -24,6 +24,12 @@ class Gr8Script7069f6af08d2470b966bea08b69990be(Strategy):
         self.traded = 0                                                        # Whether a stock has been traded or not
         self.alerted_at_2 = 0                                                  # Whether a stock has alerted at 2% or not
         
+        # Data Collection
+        self.abs_low = 0
+        self.abs_low_time = 0
+        self.entry_data = {}
+        self.exit_data = {}
+        
         service.add_time_trigger(service.time(15, 30))                         # Cover at 3:30 EST
             
     # Alert at 2%
@@ -41,7 +47,13 @@ class Gr8Script7069f6af08d2470b966bea08b69990be(Strategy):
                 service.alert( md.symbol, '2785af4f-d521-4d26-b826-50c19f40e6cc', _alertList )
                 num_shares = round((200/(1.03*(md.L1.last) - md.L1.last)))                          # Equal risk for all stocks
                                                                                                     # 200 dollar risk given 3% stop
-                order.algo_sell(self.symbol, algorithm='8fdee8fe-b772-46bd-b411-5544f7a0d917', intent='init', order_quantity=num_shares)
+                
+                self.entry_data['% ATR'] = 100*((md.L1.daily_high - md.L1.last)/md.stat.atr)        # Collect data on % ATR at entry
+                self.entry_data['Entry Time'] = service.time_to_string(service.system_time, format='%H:%M:%S')
+                self.abs_low = md.L1.last
+                self.abs_low_time = service.time_to_string(service.system_time, format='%H:%M:%S')
+                
+                order.algo_sell(self.symbol, algorithm='8fdee8fe-b772-46bd-b411-5544f7a0d917', intent='init', order_quantity=num_shares, collect=self.entry_data)
                 self.new_low = md.L1.last
                 self.traded = 1                                                                     # Stock has been traded
                                                                                                     # Prevents auto shorting if trader decides to
@@ -49,11 +61,22 @@ class Gr8Script7069f6af08d2470b966bea08b69990be(Strategy):
                                                                                                     
         if(account[self.symbol].position.shares != 0):                                              # Stop at 2% above entry
             if(md.L1.last > 1.02*(account[self.symbol].position.entry_price)):
-                order.algo_buy(self.symbol, algorithm='2b4fdc55-ff01-416e-a5ea-e1f1d4524c7d', intent='exit')
+                self.exit_data['Low of Day'] = self.abs_low
+                self.exit_data['Time of Low of Day'] = self.abs_low_time
+                order.algo_buy(self.symbol, algorithm='2b4fdc55-ff01-416e-a5ea-e1f1d4524c7d', intent='exit', collect=self.exit_data)
+
+
+            elif(md.L1.last < self.abs_low):
+                self.abs_low = md.L1.last
+                self.abs_low_time = service.time_to_string(service.system_time, format='%H:%M:%S')
+
             
     # Exit at 3:30 EST
     
     def on_timer(self, event, md, order, service, account):
         if(account[self.symbol].position.shares != 0):
-            order.algo_buy(self.symbol, algorithm='market', intent='exit')
+            self.exit_data['Low of Day'] = self.abs_low
+            self.exit_data['Time of Low of Day'] = self.abs_low_time
+            order.algo_buy(self.symbol, algorithm='market', intent='exit', collect=self.exit_data)
+
 

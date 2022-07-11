@@ -15,7 +15,7 @@ class Gr8Script4101967b4202446ba7fdeda3a1227823(Strategy):
             
     def on_start(self, md, order, service, account):
         
-        service.add_time_trigger(service.time(10, 10), repeat_interval=service.time_interval(1, 0, 0, 0))
+        service.add_time_trigger(service.time(9, 40), repeat_interval=service.time_interval(1, 0, 0, 0))
         
         self.open = 0           # Open Price
         self.close = 0
@@ -38,7 +38,7 @@ class Gr8Script4101967b4202446ba7fdeda3a1227823(Strategy):
         self.close = md.stat.prev_close
         self.qualified = 100*((md.L1.open - md.stat.prev_close)/(md.stat.prev_close))
         
-        if(self.qualified >= 3):
+        if(self.qualified >= 4):
             self.gap_up = 1
             self.gap_down = 0
             self.fill = md.stat.prev_close
@@ -48,21 +48,21 @@ class Gr8Script4101967b4202446ba7fdeda3a1227823(Strategy):
             if(md.L1.last > self.empty):
                 self.distance = abs(md.L1.last - self.empty)
 
-                _alertList = [('Price', md.L1.last), ('Message', 'Trading $' + self.distance + ' from gap up')]
+                _alertList = [('Price', md.L1.last), ('Message', 'Trading $' + str(self.distance) + ' away from gap up at ' + service.time_to_string(service.system_time,format="%H:%M:%S"))]
                 service.alert( md.symbol, 'be8e0dff-776c-4d26-8fb6-0a7f57a4cd93', _alertList )
                 
             elif(md.L1.last < self.empty):
                 self.amt_fill = abs(100*((md.L1.last - self.empty)/self.gap_size))
                 
                 if(self.amt_fill >= 99):
-                    _alertList = [('Price', md.L1.last), ('Message', 'Gap Up Filled')]
+                    _alertList = [('Price', md.L1.last), ('Message', 'Gap Up Filled' + str(service.system_time))]
                     service.alert( md.symbol, '0bb1857f-c00d-48bd-b1d9-6c22c07e8c17', _alertList )
                 
                 else:
-                    _alertList = [('Price', md.L1.last), ('Message', 'Filled' + self.amt_fill + '% of gap up')]
+                    _alertList = [('Price', md.L1.last), ('Message', 'Filled ' + str(round(self.amt_fill,2)) + '% of gap up at ' + service.time_to_string(service.system_time,format="%H:%M:%S"))]
                     service.alert( md.symbol, '32d92c42-96ea-43d1-b0fe-03ba948d761e', _alertList )
                                         
-        elif(self.qualified <= -3):
+        elif(self.qualified <= -4):
             self.gap_down = 1
             self.gap_up = 0
             self.fill = md.stat.prev_close
@@ -72,18 +72,18 @@ class Gr8Script4101967b4202446ba7fdeda3a1227823(Strategy):
             if(md.L1.last < self.empty):
                 self.distance = abs(md.L1.last - self.empty)
 
-                _alertList = [('Price', md.L1.last), ('Message', 'Trading $' + self.distance + ' from gap up/down')]
+                _alertList = [('Price', md.L1.last), ('Message', 'Trading $' + str(self.distance) + ' away from gap up/down at ' + service.time_to_string(service.system_time,format="%H:%M:%S"))]
                 service.alert( md.symbol, 'be8e0dff-776c-4d26-8fb6-0a7f57a4cd93', _alertList )
                 
             elif(md.L1.last > self.empty):
                 self.amt_fill = abs(100*((md.L1.last - self.empty)/self.gap_size))
                 
                 if(self.amt_fill >= 99):
-                    _alertList = [('Price', md.L1.last), ('Message', 'Gap Down Filled')]
+                    _alertList = [('Price', md.L1.last), ('Message', 'Gap Down Filled' + str(service.system_time))]
                     service.alert( md.symbol, '0bb1857f-c00d-48bd-b1d9-6c22c07e8c17', _alertList )
                     
                 else:
-                    _alertList = [('Price', md.L1.last), ('Message', 'Filled' + self.amt_fill + '% of gap up/down')]
+                    _alertList = [('Price', md.L1.last), ('Message', 'Filled ' + str(round(self.amt_fill,2)) + '% of gap up/down at ' + service.time_to_string(service.system_time,format="%H:%M:%S"))]
                     service.alert( md.symbol, '32d92c42-96ea-43d1-b0fe-03ba948d761e', _alertList )
                     
 
