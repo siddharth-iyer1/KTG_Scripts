@@ -1,5 +1,5 @@
 # KTG_Scripts
-Collection of algorithmic trading and related projects from KTG Summer '22
+## Collection of algorithmic trading and related projects from KTG Summer '22
 
 Descriptions of Directories and Programs:
 
