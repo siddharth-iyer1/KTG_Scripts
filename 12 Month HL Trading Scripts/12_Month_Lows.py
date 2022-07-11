@@ -1,8 +1,8 @@
 from cloudquant.interfaces import Strategy, Event
 import ktgfunc
 
-class Gr8Script3df63fa235ba456aab61c869a95442c6(Strategy):
-    __script_name__ = '12_Month_Low'
+class Gr8Scriptbdce39964be04e228d1dc60657d680fb(Strategy):
+    __script_name__ = '12 Month Lows'
 
     @classmethod 
     def is_symbol_qualified(cls, symbol, md, service, account):
