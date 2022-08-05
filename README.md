@@ -15,11 +15,11 @@
         Earnings Gaps - Run during trading hours, periodically updates on earnings trades that have gapped
         up/down significantly, used to watch behavior in comparison to other earnings day examples
       
-      Inside Day Alerts - Run at the start of trading hours, returns alerts for all stocks who saw an inside
-      day the previous day
+    Inside Day Alerts - Run at the start of trading hours, returns alerts for all stocks who saw an inside
+    day the previous day
       
-      NYSE High Notional Imbalances - Run as closing imbalance approaches, returns alerts for all stocks with
-      imbalances of +- 100,000,000 shares
+    NYSE High Notional Imbalances - Run as closing imbalance approaches, returns alerts for all stocks with
+    imbalances of +- 100,000,000 shares
 
   ##### 12 Month HL Trading Scripts:
     Contains 12 Month Highs and 12 Month Lows scripts used exclusively for forward testing without alerts.
