@@ -1,0 +1,72 @@
+from cloudquant.interfaces import Strategy, Event
+import ktgfunc
+
+class Gr8Scriptb3bb4ffbab3b40c3be528f36f20e7da5(Strategy):
+    __script_name__ = 'Trailing Long Stop'
+
+    def __init__(self, **params):
+        self.stop_price = 0                                                     # Original stop price
+        if 'stop_price' in params :
+            self.stop_price = params['stop_price']
+            
+        self.exit_shares = 0                                                    # Exit quantity
+        if 'exit_shares' in params :
+            self.exit_shares = params['exit_shares']
+            
+        self.target_price = 0
+        if 'target_price' in params:
+            self.target_price = params['target_price']
+        
+        self.order_voodoo = 'c982d0cd-9be5-4a35-b89f-1f66b2495ec4'              # Sell market ARCA
+        if 'order_voodoo' in params :
+            self.order_voodoo = params['order_voodoo']
+
+    @classmethod
+    def is_symbol_qualified(cls, symbol, md, service, account):
+        
+        return False
+
+    def on_start(self, md, order, service, account):
+        service.clear_event_triggers()
+        service.add_event_trigger([md.symbol], [Event.TRADE, Event.NBBO_PRICE, Event.FILL])
+        
+        self.trailing_stop = 0
+        self.percent_target = 0
+        
+        self.breakeven = 0
+        self.fifty_percent = 0
+        self.max = account[self.symbol].position.entry_price
+        self.done = 0
+        
+        if(self.stop_price == 0 or account[self.symbol].position.shares == 0):
+            service.terminate()
+            
+    def on_trade(self, event, md, order, service, account):
+        if(md.L1.last == self.stop_price):
+            order.algo_sell(md.symbol, self.order_voodoo, 'exit')
+            service.terminate()
+        elif(account[self.symbol].position.shares == 0):
+            service.terminate()
+
+        # If not stopped out check for opportunity to move stop price up
+        
+        self.exit_shares = account[self.symbol].position.shares
+        self.percent_target = 100*((md.L1.last - account[self.symbol].position.entry_price)/(self.target_price - account[self.symbol].position.entry_price))
+        self.fifty_percent = 0.5*(self.target_price - account[self.symbol].position.entry_price) + account[self.symbol].position.entry_price
+        
+        if(self.percent_target < 50):
+            self.stop_price = self.stop_price
+            
+        elif(self.percent_target > 50 and self.breakeven == 0 and self.done == 0):
+            self.stop_price = account[self.symbol].position.entry_price
+            self.breakeven = 1
+        
+        elif(self.percent_target > 50 and self.breakeven == 1 and self.done == 0):
+            if(md.L1.last > self.max):
+                x = md.L1.last - self.max
+                self.max = md.L1.last
+                self.stop_price += x
+
+        elif(self.percent_target >= 100 and self.done == 0):
+            self.done = 1
+                
