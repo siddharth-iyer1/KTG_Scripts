@@ -11,7 +11,7 @@
       Currently includes:
         New 12 Month Highs - Run during trading hours, notifies for new highs, approaching new highs
         New 12 Month Lows - Run during trading hours, notifies for new lows, approaching new lows
-        High Volume - Run during trading hours, notifies when a stock trades close to opening volume after open
+        High Volume - Run during trading hours, notifies when a stock trades close to opening volume
         Earnings Gaps - Run during trading hours, periodically updates on earnings trades that have gapped
         up/down significantly,
         used to watch behavior in comparison to other earnings day examples
