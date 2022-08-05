@@ -41,7 +41,7 @@ class Gr8Scriptb25d541998424e6fa57d46167944d5fd(Strategy):
     # but we can look for another way.
     
         service.add_time_trigger(service.time(9, 31), repeat_interval=service.time_interval(1, 0, 0, 0))
-    
+
         self.open = 0
         self.close = 0
         
@@ -70,7 +70,7 @@ class Gr8Scriptb25d541998424e6fa57d46167944d5fd(Strategy):
         self.close = md.stat.prev_close
         self.qualified = 100*((md.L1.open - md.stat.prev_close)/(md.stat.prev_close))
         
-        if(self.qualified >= 3):
+        if(self.qualified >= 5):
             self.gap_up = 1
             self.gap_down = 0
             self.fill = md.stat.prev_close
@@ -94,7 +94,7 @@ class Gr8Scriptb25d541998424e6fa57d46167944d5fd(Strategy):
                     _alertList = [('Price', md.L1.last), ('Message', 'Filled ' + str(round(self.amt_fill,2)) + '% of Gap Up at ' + service.time_to_string(service.system_time,format="%H:%M:%S"))]
                     service.alert( md.symbol, '32d92c42-96ea-43d1-b0fe-03ba948d761e', _alertList )
                                         
-        elif(self.qualified <= -3):
+        elif(self.qualified <= -5):
             self.gap_down = 1
             self.gap_up = 0
             self.fill = md.stat.prev_close
@@ -117,7 +117,7 @@ class Gr8Scriptb25d541998424e6fa57d46167944d5fd(Strategy):
                 else:
                     _alertList = [('Price', md.L1.last), ('Message', 'Filled ' + str(round(self.amt_fill,2)) + '% of Gap Down at ' + service.time_to_string(service.system_time,format="%H:%M:%S"))]
                     service.alert( md.symbol, '32d92c42-96ea-43d1-b0fe-03ba948d761e', _alertList )
-        
+
     # Calculate Initial Volume
     
         if(self.initVolCalculated == 0):
@@ -128,34 +128,32 @@ class Gr8Scriptb25d541998424e6fa57d46167944d5fd(Strategy):
     # On trade checks for 12 Month Highs/Lows
     
         if(hasattr(self,'high_qualified')):
-            if(self.high_qualified >= 0.025 and self.high_qualified <= 0.075):                              # Trading between 2.5 and 7.5% of 12 Month High
+
+            if(md.L1.last < self.high and md.L1.last >= 0.98*self.high and self.high_2_alerted == 0):  # 2% of High Alert
             
-                if(md.L1.last < self.high and md.L1.last >= 0.98*self.high and self.high_2_alerted == 0):  # 2% of High Alert
+                _alertList = [('Price', md.L1.last), ('Message', str(self.symbol) + ' 2% of 12 Month High of ' + str(self.high)+ ', Time: ' + service.time_to_string(service.system_time, format='%H:%M:%S'))]
+                service.alert( md.symbol, '1fadb38a-4a12-4891-adee-d35fcca5e2be', _alertList )
+                self.high_2_alerted = 1
+                        
+            if(md.L1.last > self.high and self.new_high_alerted == 0):                                  # New High Alert
                 
-                    _alertList = [('Price', md.L1.last), ('Message', str(self.symbol) + ' 2% of 12 Month High of ' + str(self.high)+ ', Time: ' + service.time_to_string(service.system_time, format='%H:%M:%S'))]
-                    service.alert( md.symbol, '1fadb38a-4a12-4891-adee-d35fcca5e2be', _alertList )
-                    self.high_2_alerted = 1
-                            
-                if(md.L1.last > self.high and self.new_high_alerted == 0):                                  # New High Alert
-                    
-                    _alertList = [('Price', md.L1.last), ('Message', 'New 12 Month High, Time:' + service.time_to_string(service.system_time, format='%H:%M:%S'))]
-                    service.alert( md.symbol, '44a652e4-c113-4512-8ce9-76e3cff8af6e', _alertList )
-                    self.new_high_alerted = 1
+                _alertList = [('Price', md.L1.last), ('Message', 'New 12 Month High, Time: ' + service.time_to_string(service.system_time, format='%H:%M:%S'))]
+                service.alert( md.symbol, '44a652e4-c113-4512-8ce9-76e3cff8af6e', _alertList )
+                self.new_high_alerted = 1
 
         if(hasattr(self,'low_qualified')):
-            if(self.low_qualified <= 0.025 and self.low_qualified >= 0.075):
-                
-                if(md.L1.last <= 1.02*self.low and md.L1.last > self.low and self.low_2_alerted == 0):     # 2% of Low Alert
-                
-                    _alertList = [('Price', md.L1.last), ('Message', str(self.symbol) + ' 2% of 12 Month Low of ' + str(self.low) + ', Time: ' + service.time_to_string(service.system_time, format='%H:%M:%S'))]
-                    service.alert( md.symbol, 'cf5a34c1-b6e5-4017-a316-cc652da9460f', _alertList )
-                    self.low_2_alerted = 1                                                 
-                            
-                if(md.L1.last <= self.low and self.traded == 0):                                            # New Low Alert
-                
-                    _alertList = [('Price', md.L1.last), ('Message', 'New 12 Month Low, Time: ' + service.time_to_string(service.system_time, format='%H:%M:%S'))]
-                    service.alert( md.symbol, '2785af4f-d521-4d26-b826-50c19f40e6cc', _alertList )
-                    self.new_low_alerted = 1
+
+            if(md.L1.last <= 1.02*self.low and md.L1.last > self.low and self.low_2_alerted == 0):     # 2% of Low Alert
+            
+                _alertList = [('Price', md.L1.last), ('Message', str(self.symbol) + ' 2% of 12 Month Low of ' + str(self.low) + ', Time: ' + service.time_to_string(service.system_time, format='%H:%M:%S'))]
+                service.alert( md.symbol, 'cf5a34c1-b6e5-4017-a316-cc652da9460f', _alertList )
+                self.low_2_alerted = 1                                                 
+                        
+            if(md.L1.last <= self.low and self.new_low_alerted == 0):                                            # New Low Alert
+            
+                _alertList = [('Price', md.L1.last), ('Message', 'New 12 Month Low, Time: ' + service.time_to_string(service.system_time, format='%H:%M:%S'))]
+                service.alert( md.symbol, '2785af4f-d521-4d26-b826-50c19f40e6cc', _alertList )
+                self.new_low_alerted = 1
                 
     # On trade checks for abnormally high volume
     
