@@ -13,8 +13,7 @@
         New 12 Month Lows - Run during trading hours, notifies for new lows, approaching new lows
         High Volume - Run during trading hours, notifies when a stock trades close to opening volume
         Earnings Gaps - Run during trading hours, periodically updates on earnings trades that have gapped
-        up/down significantly,
-        used to watch behavior in comparison to other earnings day examples
+        up/down significantly, used to watch behavior in comparison to other earnings day examples
       
       Inside Day Alerts - Run at the start of trading hours, returns alerts for all stocks who saw an inside
       day the previous day
