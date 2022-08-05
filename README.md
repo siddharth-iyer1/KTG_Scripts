@@ -9,8 +9,7 @@
   ###### Active Scripts Include:
     Siddharth's Big Alert Script - Class that consolidates most of my alerts, sent out to traders at the office.
     Some alerts aren't able to run within this class, so they are stand alone.
-    
-      Currently includes:
+      Within Big Alert Script:
         New 12 Month Highs - Run during trading hours, notifies for new highs, approaching new highs
         New 12 Month Lows - Run during trading hours, notifies for new lows, approaching new lows
         High Volume - Run during trading hours, notifies when a stock trades close to opening volume
