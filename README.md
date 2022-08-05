@@ -3,8 +3,7 @@
 
 #### Descriptions of Directories and Programs:
 
-##### Alert Scripts:
-  ###### Contains both active and old alert scripts.
+##### Alert Scripts: Contains both active and old alert scripts.
   
   ###### Active Scripts Include:
     Siddharth's Big Alert Script - Class that consolidates most of my alerts, sent out to traders at the office.
